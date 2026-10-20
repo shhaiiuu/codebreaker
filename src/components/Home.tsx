@@ -42,8 +42,8 @@ export default function Home({ onCreate, onEnter }: { onCreate: () => void; onEn
         <Logo size="text-4xl" />
         <p className="text-center text-sm">Two players. Two secret numbers. One winner.</p>
         <div className="flex gap-2">
-          <input value={p.name} maxLength={20} onChange={(e) => p.setName(e.target.value)} placeholder="Your name" aria-label="Display name" className="field flex-1" />
-          <select value={p.lang} onChange={(e) => p.setLang(e.target.value)} aria-label="Language" className="field w-auto">
+          <input value={p.name} maxLength={20} onChange={(e) => p.setName(e.target.value)} placeholder="Your name" aria-label="Display name" className="field min-w-0 flex-1 text-lg" />
+          <select value={p.lang} onChange={(e) => p.setLang(e.target.value)} aria-label="Language" className="field w-28 shrink-0 px-2 text-sm">
             <option value="en">English</option>
           </select>
         </div>
@@ -64,7 +64,7 @@ export default function Home({ onCreate, onEnter }: { onCreate: () => void; onEn
           <form onSubmit={(e) => { e.preventDefault(); join() }} className="row-new space-y-2 rounded-2xl border-2 border-sky-200 bg-sky-100 p-3 text-navy">
             <label className="block text-sm">Enter your friend's room code
               <input value={code} maxLength={5} autoFocus onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="e.g. DWB8R"
-                className="field mt-1 font-mono text-lg uppercase tracking-widest" />
+                className="field mt-1 font-mono text-lg uppercase tracking-widest placeholder:normal-case placeholder:tracking-normal" />
             </label>
             <div className="flex gap-2">
               <button type="button" onClick={() => { setJoining(false); setError(null) }} className="btn btn-light flex-1 text-base">Cancel</button>

@@ -13,7 +13,10 @@ h1, h2, h3, .font-display { font-family: Fredoka, system-ui, sans-serif; }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .btn-purple { background: #7c5cff; } .btn-blue { background: #1e90ff; } .btn-red { background: #ff5a6a; }
 .btn-yellow { background: #ffd23f; color: #1b2559; } .btn-light { background: #fff; color: #1b2559; }
-.field { border: 2px solid #cfe0ff; border-radius: 12px; background: #fff; color: #1b2559; padding: 0.55rem 0.8rem; width: 100%; }
+/* In the components layer so width utilities (w-28, flex-1) can override the default width */
+@layer components {
+  .field { border: 2px solid #cfe0ff; border-radius: 12px; background: #fff; color: #1b2559; padding: 0.55rem 0.8rem; width: 100%; }
+}
 
 @keyframes pop { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
 @keyframes fall { 0% { transform: translateY(-20px) rotate(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(260px) rotate(360deg); opacity: 0; } }
