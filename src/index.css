@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { background: #1a4fd6; color: #1b2559; font-family: 'Patrick Hand', system-ui, sans-serif; font-size: 18px; }
+h1, h2, h3, .font-display { font-family: Fredoka, system-ui, sans-serif; }
+:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
+
+.card { background: #fff; border: 3px solid #1b2559; border-radius: 18px; box-shadow: 0 4px 0 #1b2559; }
+.btn { border: 3px solid #1b2559; border-radius: 14px; box-shadow: 0 4px 0 #1b2559; font-family: Fredoka, sans-serif;
+  font-weight: 700; color: #fff; padding: 0.6rem 1rem; transition: transform 0.1s, box-shadow 0.1s; }
+.btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #1b2559; }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-purple { background: #7c5cff; } .btn-blue { background: #1e90ff; } .btn-red { background: #ff5a6a; }
+.btn-yellow { background: #ffd23f; color: #1b2559; } .btn-light { background: #fff; color: #1b2559; }
+.field { border: 2px solid #cfe0ff; border-radius: 12px; background: #fff; color: #1b2559; padding: 0.55rem 0.8rem; width: 100%; }
+
+@keyframes pop { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes fall { 0% { transform: translateY(-20px) rotate(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(260px) rotate(360deg); opacity: 0; } }
+.row-new { animation: pop 0.35s ease-out; }
+.confetti { position: absolute; top: 0; width: 9px; height: 14px; border-radius: 2px; animation: fall 2.2s ease-in 1 both; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .confetti { display: none; } }

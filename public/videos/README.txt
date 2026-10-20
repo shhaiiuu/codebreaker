@@ -1,0 +1,1 @@
+Put win-surprise.mp4 and lose-surprise.mp4 in this folder. They are served at /videos/win-surprise.mp4 and /videos/lose-surprise.mp4. Until then the Surprise bar shows a friendly 'not added yet' message.
