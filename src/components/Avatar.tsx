@@ -1,26 +1,12 @@
-export const AVATAR_COUNT = 12
-const SKIN = ['#ffd9b8', '#f1c27d', '#c68642', '#8d5524', '#ffe0d0', '#e8b98a']
-const HAIR = ['#e8590c', '#3b2a20', '#f4c430', '#222831', '#8e44ad', '#2f9e44']
-type Mood = 'happy' | 'sad' | 'neutral'
+import { AVATAR_COUNT, buildAvatar, H, W, type Face } from '../lib/avatarGrid'
+export { AVATAR_COUNT }
 
-// 16-wide pixel grid. o = outline, s = skin, h = hair, e = eye, m = mouth.
-const R = (lead: number, mid: string) => '.'.repeat(lead) + 'o' + mid + 'o' + '.'.repeat(lead)
-const S = (n: number) => 's'.repeat(n)
-const TOP = ['....oooooooo....', R(3, 'h'.repeat(8)), R(2, 'h'.repeat(10)), R(1, 'h'.repeat(12)), R(1, 'hhsssssssshh'), R(1, S(12)),
-  R(1, 'sseesssseess'), R(1, 'sseesssseess'), R(1, S(12)), R(1, S(12))]
-const MOUTH: Record<Mood, string[]> = {
-  happy: [R(1, 'sssmssssmsss'), R(1, 'ssssmmmmssss')],
-  sad: [R(1, 'ssssmmmmssss'), R(1, 'sssmssssmsss')],
-  neutral: [R(1, 'ssssmmmmssss'), R(1, S(12))],
-}
-const BOTTOM = [R(2, S(10)), R(4, S(6)), '.oo' + S(10) + 'oo.', R(1, S(12)), '.' + 'o'.repeat(14) + '.']
-
-export default function Avatar({ id, size = 40, mood = 'happy' }: { id: number; size?: number; mood?: Mood }) {
-  const col: Record<string, string> = { o: '#1b2559', e: '#1b2559', m: '#1b2559', s: SKIN[id % 6], h: HAIR[Math.floor(id / 2) % 6] }
-  const rows = [...TOP, ...MOUTH[mood], ...BOTTOM]
+/** Pixel-art avatar. `mood` (optional) overrides the avatar's own face, e.g. happy/sad on result screens. */
+export default function Avatar({ id, size = 40, mood }: { id: number; size?: number; mood?: Face }) {
+  const { rows, palette } = buildAvatar(id, mood)
   return (
-    <svg viewBox="0 0 16 17" width={size} height={size * (17 / 16)} role="img" aria-label={`Avatar ${id + 1}`} shapeRendering="crispEdges" className="shrink-0">
-      {rows.flatMap((r, y) => [...r].map((c, x) => (c === '.' ? null : <rect key={`${x}-${y}`} x={x} y={y} width="1.02" height="1.02" fill={col[c]} />)))}
+    <svg viewBox={`0 0 ${W} ${H}`} width={size} height={size * (H / W)} role="img" aria-label={`Avatar ${id + 1}`} shapeRendering="crispEdges" className="shrink-0">
+      {rows.flatMap((r, y) => [...r].map((c, x) => (c === '.' ? null : <rect key={`${x}-${y}`} x={x} y={y} width="1.02" height="1.02" fill={palette[c]} />)))}
     </svg>
   )
 }
