@@ -9,6 +9,7 @@ import GameBoard from './GameBoard'
 import GameHeader from './GameHeader'
 import Rules from './Rules'
 import WaitingRoom from './WaitingRoom'
+import { ChatWidget } from '../chat/ChatWidget'
 
 export default function Room({ code, uid, onLeave }: { code: string; uid: string; onLeave: () => void }) {
   const profile = useProfile()
@@ -110,6 +111,11 @@ export default function Room({ code, uid, onLeave }: { code: string; uid: string
         <GameBoard key={`${room.id}-${room.round}`} room={room} uid={uid} me={me} opp={opp} mine={mine} theirs={theirs}
           secret={secret} reveal={reveal} busy={busy} error={error} myTurn={myTurn}
           onGuess={onGuess} onRematch={() => run(() => api.rematch(room.id))} onHome={onLeave} />
+      )}
+      {me && opp && (
+        <div className="codebreaker-chat">
+          <ChatWidget roomId={room.id} uid={uid} me={me} opp={opp} oppOnline={online.has(opp.user_id)} />
+        </div>
       )}
       <Rules open={rules} onClose={() => setRules(false)} />
     </main>
