@@ -1,74 +1,143 @@
 # Codebreaker: Number Duel
 
-Two-player online number-guessing game. React + TypeScript + Tailwind, with Supabase for the database, realtime sync and server-side rules.
+Codebreaker: Number Duel is a two-player online guessing game where you try to figure out your opponent’s secret number before they figure out yours.
 
-## How it keeps secrets safe (plain English)
-- Secret numbers are stored in a table (`secrets`) that browsers are **not allowed to read at all**.
-- Browsers can't write to the game tables either. They can only call a few server functions (`create_room`, `join_room`, `set_secret`, `submit_guess`, `rematch`, `get_reveal`).
-- Those functions check who you are, whose turn it is and whether the guess is valid, calculate the clues, and lock the room row so two simultaneous guesses are handled one at a time.
-- Secrets are revealed only by `get_reveal`, and only after the game is finished.
-- Your browser only ever holds the **anon/publishable key**, which is designed to be public. Never use the `service_role` / secret key in this project.
+Each player chooses a four-digit number, and both players take turns guessing. After every guess, the game gives you clues about how many digits are correct and how many are in the correct positions. Use those clues, along with your previous guesses, to narrow down the possibilities and crack your opponent’s number.
 
-## Setup
+The game is built with React, TypeScript, and Tailwind CSS. Supabase handles the database, real-time updates, and the server-side logic that keeps the game fair and protects secret numbers.
 
-### 1. Create the Supabase project
-1. Go to supabase.com, sign up, click **New project**. Choose a name, a database password (save it somewhere), and the region nearest to you and your friend.
-2. Wait about two minutes until it finishes setting up.
+## How to Play
 
-### 2. Create the database and turn on anonymous sign-in
-1. Left menu **SQL Editor > New query**. Paste all of `supabase/schema.sql`, click **Run**. It should say "Success". If it errors, copy the error message and send it to me.
-2. New query again: paste `supabase/tests.sql` (parts 1 and 2) and run. You want "clue tests passed" and "validation tests passed" in the output.
-3. **Authentication > Sign In / Providers** (labelled "Providers" in some versions), turn on **Allow anonymous sign-ins**, save. Players don't make accounts. Each browser gets a private anonymous identity.
-4. Verify security: in SQL Editor run `set role authenticated; select * from public.secrets;` then `reset role;`. You **must** see "permission denied". If you see rows, stop and tell me.
-5. Check **Database > Publications > supabase_realtime** lists `rooms`, `players`, `guesses` (and not `secrets`).
+1. Each player secretly chooses a four-digit number.
+2. The number cannot start with `0`, and no digit can be repeated. For example, `2368` is valid, but `0123` and `1123` are not.
+3. Players take turns guessing their opponent’s number.
+4. After each guess, the game tells you how many guessed digits appear in the secret number and how many are in exactly the right positions.
+5. Use these clues and your previous guesses to plan your next move. The game won't tell you exactly which digits are correct.
+6. The first player to guess the opponent’s complete secret number wins!
 
-**Already ran the original schema?** Also run `supabase/migration_002_ui.sql` once (adds avatars and the "read my own secret" function). Fresh installs don't need it: it's already at the end of `schema.sql`.
+Your dashboard keeps track of your previous guesses and clues, helping you work out your next move.
 
-### Surprise videos
-Put `win-surprise.mp4` and `lose-surprise.mp4` in `public/videos/`. Until you do, the "Click for a Surprise!" bar opens a friendly "not added yet" message.
+## Keeping Secret Numbers Safe
 
-### 3. Run it on your computer
-1. Install Node.js (version 20 or newer) from nodejs.org.
-2. In Supabase, **Project Settings > API** (or "API Keys"). Copy the **Project URL** and the **anon / publishable** key.
-3. In this project folder: copy `.env.example` to `.env.local` and paste the two values in.
-4. In a terminal in the folder run:
-   ```
+The game uses Supabase to protect each player's secret number and make sure turns are handled correctly.
+
+- Secret numbers are stored in a separate `secrets` table that browsers cannot read directly.
+- Players cannot directly write to the game tables. Instead, the game uses server-side functions to create rooms, join games, save secret numbers, submit guesses, start rematches, and reveal the final numbers.
+- The server checks each action to make sure the player is allowed to perform it and that the guess is valid.
+- The server calculates the clues, so players cannot simply change the results in their browser.
+- Secret numbers are revealed only after the game ends, through the `get_reveal` function.
+- The browser uses only the public Supabase anon/publishable key. Never put the `service_role` key or any secret key in the frontend.
+
+## Getting Started
+
+### 1. Create a Supabase project
+
+1. Go to [Supabase](https://supabase.com/) and create an account if you don't already have one.
+2. Create a new project and choose a name, database password, and region.
+3. Wait for the project to finish setting up.
+
+Keep your database password somewhere safe.
+
+### 2. Set up the database
+
+1. Open your Supabase project and go to **SQL Editor**.
+2. Create a new query, paste the contents of `supabase/schema.sql`, and run it.
+3. If the project includes `supabase/tests.sql`, run its tests and check that the clue and validation tests pass.
+4. Under **Authentication → Sign In / Providers**, enable anonymous sign-ins so players can join without creating accounts.
+5. Check that the `rooms`, `players`, and `guesses` tables are included in the `supabase_realtime` publication. The `secrets` table should not be included.
+
+You should also verify that authenticated users cannot read the `secrets` table directly. If you get unexpected results or an SQL error, stop and check the permissions before making the game public.
+
+**Already set up the database?** If your existing database needs the UI changes from `supabase/migration_002_ui.sql`, run that migration once. Fresh installations may already include those changes in `schema.sql`, so check before running it again.
+
+### 3. Add the surprise videos
+
+If you want the surprise videos to play on the win and lose screens, place these files in `public/videos/`:
+
+- `win-surprise.mp4`
+- `lose-surprise.mp4`
+
+If the files aren't there, the game should display its fallback message instead.
+
+### 4. Run the game on your computer
+
+You'll need Node.js version 20 or newer.
+
+1. Install Node.js from [nodejs.org](https://nodejs.org/).
+2. Open your Supabase project and find the project URL and anon/publishable key under **Project Settings → API** or **API Keys**.
+3. In your project folder, copy `.env.example` to `.env.local`.
+4. Add your Supabase details to `.env.local`:
+
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+
+5. Open a terminal in your project folder and run:
+
+   ```bash
    npm install
    npm test
    npm run build
    npm run dev
    ```
-   Open the address it prints (usually http://localhost:5173). `npm run build` also type-checks the code. If it prints errors, send them to me.
 
-### 4. Deploy publicly (Vercel, free tier)
-1. Put the folder on GitHub (create a repo, upload the files; `.env.local` is ignored by `.gitignore` and must not be uploaded).
-2. On vercel.com choose **Add New > Project**, import the repo. Framework preset: **Vite**.
-3. Under **Environment Variables** add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` with the same values as before. Click **Deploy**.
-4. You get an `https://something.vercel.app` address. (Netlify works the same way: build command `npm run build`, publish directory `dist`.)
-5. In Supabase **Authentication > URL Configuration**, set Site URL to your Vercel address. Anonymous sign-in doesn't use redirects, so this is mainly tidiness.
+6. Open the local address shown in your terminal, usually `http://localhost:5173`.
 
-### Environment variables
-| Name | What it is | Secret? |
-|---|---|---|
-| `VITE_SUPABASE_URL` | Your project address | No |
-| `VITE_SUPABASE_ANON_KEY` | Public (anon/publishable) key | No, but never swap in the service_role key |
+If a command fails, check the error message before continuing.
 
-## Two-device test checklist
-Use two **different browsers or devices**. Two tabs of the same browser share one identity and will not work as two players. (A private/incognito window counts as separate.)
-1. Device A: enter a name, **Create Room**, copy the invite link. Send it to device B (ideally on mobile data instead of Wi-Fi).
-2. Device B: open the link, enter a name, **Join room**. A should show "B joined the room"; both show Online.
-3. Both lock in secrets. Try `0123`, `1123`, `123`: each should show a friendly error. Confirm the opponent never sees your digits.
-4. Game starts; exactly one device has the active guess box. The other's box is disabled.
-5. Guess invalid numbers on the active device: no row added, turn unchanged.
-6. Make valid guesses: both tables update on both screens, turns alternate. Check against secrets 2368: guess 1234 gives 2 / 0, guess 2567 gives 2 / 2.
-7. Refresh the page on one device mid-game: you return to the same game with history.
-8. Turn Wi-Fi/data off on one device for ~20 seconds, then back on: it shows "Connection lost" then recovers; the other device sees offline/online notices.
-9. Guess the exact number: both screens show the winner, guess counts and both secrets.
-10. Tap **Play Again** on either device: both go back to choosing new secrets and the history starts fresh.
-11. Out-of-turn check (optional): the backend rejects it with "It is not your turn yet." Try it by editing the code to enable the button, or via the browser console: `supabase.rpc('submit_guess', ...)`.
+### 5. Put the game online
 
-## Known limits
-- Rooms expire for joining after 24 hours. Old rooms are not deleted automatically (you can delete rows in the dashboard).
-- Identity is per browser: clearing site data loses your seat in a running game.
-- Rate limiting: turn order already limits guess speed, but there is no per-IP limit on creating rooms. For a public launch, enable CAPTCHA for anonymous sign-ins in Supabase.
-- If a player never returns, the game simply waits; there is no forfeit timer.
+You can deploy the game using Vercel so you and your friend can play from different devices.
+
+1. Push your project to a GitHub repository.
+2. Make sure `.env.local` is not uploaded to GitHub.
+3. Sign in to [Vercel](https://vercel.com/) and import your GitHub repository.
+4. Select **Vite** as the framework preset.
+5. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` under Environment Variables.
+6. Deploy the project.
+7. Once deployment finishes, Vercel will give you a public URL you can share with your friend.
+
+In Supabase, open **Authentication → URL Configuration** and set the Site URL to your deployed website address.
+
+You can also use Netlify. The usual Vite build command is `npm run build`, and the output directory is `dist`.
+
+## Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| `VITE_SUPABASE_URL` | Your Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | The public anon/publishable key used by the frontend |
+
+These values are intended for frontend use, but database security must still be enforced through proper permissions and server-side checks. Never replace the public key with a `service_role` key.
+
+## Testing the Game
+
+Before sharing the game, test it on two different browsers or devices. Two tabs in the same browser may share the same anonymous identity, so they might not behave like two separate players.
+
+1. On Device A, enter a name and create a room.
+2. Copy the room invite link and open it on Device B.
+3. On Device B, enter a name and join the room.
+4. Check that both players can see when the other joins and that their online status updates.
+5. Try invalid secret numbers such as `0123`, `1123`, and `1234` with repeated digits where applicable. The game should show a helpful error and reject invalid numbers.
+6. Confirm that neither player can see the other's secret number before the game ends.
+7. Check that only the player whose turn it is can submit a guess.
+8. Submit valid guesses and confirm that both screens show the same guesses and clues in the correct order.
+9. Refresh one device during a game and check that the game state and guess history are restored.
+10. Disconnect one device briefly, reconnect it, and check that the connection status recovers.
+11. Guess the exact secret number and confirm that both players see the result and the final secrets.
+12. Start a rematch and confirm that the new game begins with fresh secret numbers and an empty guess history.
+
+The expected clue results should also be checked against the actual server-side rules. For example, if the secret number is `2368`, the guess `1234` should produce 2 matching digits and 0 exact-position matches. The guess `2567` should produce 2 matching digits and 2 exact-position matches.
+
+## Current Limitations
+
+- Rooms stop accepting new players after 24 hours.
+- Old room records are not automatically deleted.
+- Each player's identity is tied to their browser. Clearing that browser's site data may cause them to lose access to their seat in an ongoing game.
+- There is no per-IP limit on room creation yet. Before a public launch, consider adding CAPTCHA and stronger abuse protection for anonymous sign-ins.
+- If a player leaves and never returns, the game waits for them. There is currently no automatic forfeit timer.
+
+## Before Launching
+
+Test the game thoroughly on two separate devices, verify the database permissions, and make sure the deployed website uses the correct environment variables. Never expose secret keys or allow the browser to access hidden game data directly.
+
+Have fun, and may the best codebreaker win!
