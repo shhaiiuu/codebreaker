@@ -1,10 +1,10 @@
 # Codebreaker: Number Duel
 
-Hey! Welcome to Codebreaker: Number Duel.
+Hiee everyone!!!
 
-This is a two-player number-guessing game where you and your friend try to figure out each other's secret numbers. The catch is that you don't get to see the actual number or know exactly which digits you've guessed correctly. You have to use the clues the game gives you and figure it out yourself.
+This is a two player number guessing game where you and your friend try to figure out each other's secret numbers. The catch is that you don't get to see the actual number or know exactly which digits you've guessed correctly. You have to use the clues the game gives you and figure it out yourself.
 
-Both players choose a four-digit number, then take turns guessing. After each guess, you'll find out how many digits are correct and how many are in the right positions. Your job is to use that information to crack your opponent's number before they crack yours.
+Both players choose a 4 digit number, then take turns in guessing. After each guess, you'll find out how many digits are correct and how many are in the right positions. Your job is to use that information to crack your opponent's number before they crack yours.
 
 I built this game using React, TypeScript, and Tailwind CSS, with Supabase handling the database and keeping both players in sync while they play.
 
@@ -32,6 +32,8 @@ The game also needs to make sure that nobody can peek at the other player's secr
 Secret numbers are kept separately from the information shown during the game. The server checks guesses, works out the clues, and only reveals the secret numbers once the game is over.
 
 Players can join without creating a regular account because the game uses Supabase's anonymous sign-in feature. The browser uses the public Supabase key to connect to the project, while access to the actual game data is controlled through database permissions and server-side functions.
+
+I also added a chat system so players can talk to each other while playing the game. Instead of switching to another app just to send a message, you can chat right inside the game. The supabase handles the messages and keeps the conversation updated in real time. When one player sends a message, the other player can see it without needing to refresh the page.
 
 ## Getting the Game Running
 
