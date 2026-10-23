@@ -319,6 +319,10 @@ export function ChatWidget({ roomId, uid, me, opp, oppOnline }: { roomId: string
             </button>
             <input
               ref={inputRef}
+              type="text"
+              id="chat-message"
+              name="chat-message"
+              autoComplete="off"
               value={text}
               onChange={(e) => {
                 setText(e.target.value);
