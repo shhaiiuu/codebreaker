@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Player, Room } from '../lib/types'
 import Avatar from './Avatar'
-
+import { Send } from 'lucide-react'
 export default function WaitingRoom({ room, me, link }: { room: Room; me?: Player; link: string }) {
   const [copied, setCopied] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -18,7 +18,15 @@ export default function WaitingRoom({ room, me, link }: { room: Room; me?: Playe
         <button onClick={() => copy(room.code, 'code')} className="btn btn-blue flex-1 text-base">{copied === 'code' ? '✓ Copied' : 'Copy code'}</button>
         <button onClick={() => copy(link, 'link')} className="btn btn-purple flex-1 text-base">{copied === 'link' ? '✓ Copied' : 'Copy invite link'}</button>
       </div>
-      {typeof navigator.share === 'function' && <button onClick={() => navigator.share({ title: 'Codebreaker.io', url: link }).catch(() => {})} className="text-sm underline">Share…</button>}
+      {typeof navigator.share === 'function' && (
+  <button
+    onClick={() => navigator.share({ title: 'Codebreaker.io', url: link }).catch(() => {})}
+    className="inline-flex items-center justify-center gap-1 text-sm underline"
+  >
+    <Send size={14} />
+    Share...
+  </button>
+)}
       {error && <p role="alert" className="text-sm font-bold text-red-700">{error}</p>}
       <p aria-live="polite" className="font-bold">Waiting for your friend to join…</p>
     </section>
