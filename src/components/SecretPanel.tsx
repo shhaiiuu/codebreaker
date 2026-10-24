@@ -43,7 +43,7 @@ export default function SecretPanel({ secret }: { secret: string | null }) {
       <button
         type="button"
         onClick={() => setHidden(!hidden)}
-        className="mt-2 text-sm underline"
+        className="mt-2 block w-full text-center text-sm underline"
         aria-pressed={!hidden}
       >
         {hidden ? 'Show digits' : 'Hide digits'}
