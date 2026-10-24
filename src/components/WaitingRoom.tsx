@@ -21,10 +21,10 @@ export default function WaitingRoom({ room, me, link }: { room: Room; me?: Playe
       {typeof navigator.share === 'function' && (
   <button
     onClick={() => navigator.share({ title: 'Codebreaker.io', url: link }).catch(() => {})}
-    className="inline-flex items-center justify-center gap-1 text-sm underline"
+    className="inline-flex items-center justify-center gap-1 text-sm"
   >
     <Send size={14} />
-    Share...
+    Share
   </button>
 )}
       {error && <p role="alert" className="text-sm font-bold text-red-700">{error}</p>}
